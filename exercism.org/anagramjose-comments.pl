@@ -14,17 +14,18 @@ list_to_string_char([H|T], [RH|R]):-
     list_to_string_char(T, R), 
     string_chars(H, RH). 
 
-%% manual map(): char list to lowercase char list
-lower_case_list([], []). 
-lower_case_list([H|T], [RH|R]):- 
-    lower_case_list(T, R), 
-    string_lower(H, RH). 
+%% char list to lowercase char list
+%% using mapping high order function
+lower_case_list(CharList, LowerCaseCharList):- 
+    maplist(string_lower, CharList, LowerCaseCharList).
 
-%%manual map(): char lists to lowercase char lists
+%% char lists to lowercase char lists
+%% manual map, tail recursive (makes sense when using deterministic functions)
+%% https://www.metalevel.at/prolog/fun
 lower2([], []).
 lower2([Head|Tail], [RHead|R]):- 
-    lower2(Tail, R), 
-    lower_case_list(Head, RHead). 
+    lower_case_list(Head, RHead),
+    lower2(Tail, R). 
     
 anagram_list(_, [], []). 
 
@@ -52,7 +53,7 @@ anagram_list(Word, [Head|Tail], R):-
 % skip head, ? (+ do not fall to other function versions?)
 anagram_list(Word, [Head|Tail], R):- 
     anagram_list(Word, Tail, R), 
-    + same_length(Head, Word). 
+    + same_length(Head, Word).      % what does + means here?
     
 anagram_list(Word, [Head|Tail], R):- 
     anagram_list(Word, Tail, R), 
@@ -63,5 +64,5 @@ anagram_list(Word, [Head|Tail], R):-
 permutation([], []). 
 permutation([Head|Tail], R2):- 
     permutation(Tail, R), 
-    append(L1, L2, R), 
-    append(L1, [Head|L2], R2).
+    append(LastSkipped, LastOnly, R), 
+    append(LastSkipped, [Head|LastOnly], R2).
