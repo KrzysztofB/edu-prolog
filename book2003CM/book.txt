@@ -1,0 +1,2 @@
+Programming in Prolog, 5th ed (2003)
+Clocksin, Mellish
